@@ -9,6 +9,7 @@ function App() {
   const [prData, setPrData] = useState({});
   const [qaMetrics, setQaMetrics] = useState({});
   const [loading, setLoading] = useState(true);
+  const [selectedRepo, setSelectedRepo] = useState(null);
 
   const fetchPRData = () => {
     setLoading(true);
@@ -32,13 +33,11 @@ function App() {
       });
   };
 
-    // Fetch data initially and every 1 hour
-    useEffect(() => {
-      fetchPRData(); // Initial fetch
-      const interval = setInterval(fetchPRData, 3600000); // 1 hour = 3600000ms
-  
-      return () => clearInterval(interval); // Cleanup interval on unmount
-    }, []);
+  useEffect(() => {
+    fetchPRData(); // Initial fetch
+    const interval = setInterval(fetchPRData, 3600000); // 1 hour = 3600000ms
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
 
   return (
     <Container className="mt-4">
@@ -61,72 +60,79 @@ function App() {
           <Table striped bordered hover className="metrics-table">
             <thead className="table-dark">
               <tr>
-                <th>Repository</th>
-                <th>Security Issues</th>
-                <th>Reliability Issues</th>
-                <th>Maintainability Issues</th>
-                <th>Coverage (%)</th>
-                <th>Duplications (%)</th>
-                <th>Security Hotspots</th>
+                <th className="border-thick">Repository</th>
+                <th className="border-thick">Security Issues</th>
+                <th className="border-thick">Reliability Issues</th>
+                <th className="border-thick">Maintainability Issues</th>
+                <th className="border-thick">Coverage (%)</th>
+                <th className="border-thick">Duplications (%)</th>
+                <th className="border-thick">Security Hotspots</th>
               </tr>
             </thead>
             <tbody>
               {Object.entries(qaMetrics).map(([repo, metrics]) => (
-                <tr key={repo}>
-                  <td>{repo}</td>
-                  <td>{metrics.security_issues}</td>
-                  <td>{metrics.reliability_issues}</td>
-                  <td>{metrics.maintainability_issues}</td>
-                  <td>{metrics.coverage}</td>
-                  <td>{metrics.duplications}</td>
-                  <td>{metrics.security_hotspots}</td>
+                <tr 
+                  key={repo} 
+                  onClick={() => setSelectedRepo(repo)} 
+                  style={{ cursor: "pointer" }} 
+                  className="repository-row border-thick"
+                >
+                  <td className="repository-cell border-thick">{repo}</td>
+                  <td className="border-thick">{metrics.security_issues}</td>
+                  <td className="border-thick">{metrics.reliability_issues}</td>
+                  <td className="border-thick">{metrics.maintainability_issues}</td>
+                  <td className="border-thick">{metrics.coverage}</td>
+                  <td className="border-thick">{metrics.duplications}</td>
+                  <td className="border-thick">{metrics.security_hotspots}</td>
                 </tr>
               ))}
             </tbody>
           </Table>
 
-          <h4 className="mt-4">🚀 PR Metrics (Grouped by Repository)</h4>
-          <Table striped bordered hover className="pr-table">
-            <thead className="table-dark">
-              <tr>
-                <th>Repository</th>
-                <th>PR Key</th>
-                <th>Branch</th>
-                <th>Date</th>
-                <th>Security Issues</th>
-                <th>Reliability Issues</th>
-                <th>Maintainability Issues</th>
-                <th>Coverage (%)</th>
-                <th>Duplications (%)</th>
-                <th>Security Hotspots</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(prData).map(([repo, prs]) =>
-                prs.length > 0 ? (
-                  prs.map((pr, index) => (
-                    <tr key={pr.pr_key}>
-                      {index === 0 && <td rowSpan={prs.length}>{repo}</td>}
-                      <td>{pr.pr_key}</td>
-                      <td>{pr.branch}</td>
-                      <td>{pr.date}</td>
-                      <td>{pr.security_issues}</td>
-                      <td>{pr.reliability_issues}</td>
-                      <td>{pr.maintainability_issues}</td>
-                      <td>{pr.coverage}</td>
-                      <td>{pr.duplications}</td>
-                      <td>{pr.security_hotspots}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr key={repo}>
-                    <td>{repo}</td>
-                    <td colSpan="9">No PR data available</td>
+          {selectedRepo && (
+            <>
+            <br />
+              <h4 className="mt-4">🚀 PR Metrics for {selectedRepo}</h4>
+              <Table striped bordered hover className="pr-table">
+                <thead className="table-dark">
+                  <tr>
+                    <th className="border-thick">PR Key</th>
+                    <th className="border-thick">Branch</th>
+                    <th className="border-thick">Date</th>
+                    <th className="border-thick">Security Issues</th>
+                    <th className="border-thick">Reliability Issues</th>
+                    <th className="border-thick">Maintainability Issues</th>
+                    <th className="border-thick">Coverage (%)</th>
+                    <th className="border-thick">Duplications (%)</th>
+                    <th className="border-thick">Security Hotspots</th>
                   </tr>
-                )
-              )}
-            </tbody>
-          </Table>
+                </thead>
+                <tbody>
+                  {prData[selectedRepo]?.length > 0 ? (
+                    prData[selectedRepo].map((pr) => (
+                      <tr key={pr.pr_key} className="border-thick">
+                        <td className="border-thick">{pr.pr_key}</td>
+                        <td className="border-thick">{pr.branch}</td>
+                        <td className="border-thick">{pr.date}</td>
+                        <td className="border-thick">{pr.security_issues}</td>
+                        <td className="border-thick">{pr.reliability_issues}</td>
+                        <td className="border-thick">{pr.maintainability_issues}</td>
+                        <td className="border-thick">{pr.coverage}</td>
+                        <td className="border-thick">{pr.duplications}</td>
+                        <td className="border-thick">{pr.security_hotspots}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="border-thick">
+                      <td colSpan="9" className="text-center border-thick">
+                        No PR data available for {selectedRepo}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </Table>
+            </>
+          )}
         </>
       )}
     </Container>
