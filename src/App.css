@@ -28,6 +28,7 @@ h4 {
   width: 100%;
   margin-bottom: 20px;
   border: 4px solid #0f0cf0; /* Thicker border */
+  --bs-table-border-color:black !important;
 }
 
 .metrics-table th,
@@ -51,6 +52,8 @@ h4 {
 .repository-row:nth-child(8) .repository-cell { background-color: #f8d7e2; } /* Light Rose */
 .repository-row:nth-child(9) .repository-cell { background-color: #c3e6cb; } /* Light Mint */
 .repository-row:nth-child(10) .repository-cell { background-color: #f4e3bc; } /* Soft Orange */
+.repository-row:nth-child(11) .repository-cell { background-color: #f8d7da; } /* Light Red */
+.repository-row:nth-child(12) .repository-cell { background-color: #fff3cd; } /* Light Yellow */
 
 /* Bold Repository Name */
 .repository-cell {
