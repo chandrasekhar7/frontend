@@ -97,6 +97,7 @@ function App() {
                 <thead className="table-dark">
                   <tr>
                     <th className="border-thick">PR Key</th>
+                    <th className="border-thick">Author</th>
                     <th className="border-thick">Branch</th>
                     <th className="border-thick">Date</th>
                     <th className="border-thick">Security Issues</th>
@@ -111,7 +112,12 @@ function App() {
                   {prData[selectedRepo]?.length > 0 ? (
                     prData[selectedRepo].map((pr) => (
                       <tr key={pr.pr_key} className="border-thick">
-                        <td className="border-thick">{pr.pr_key}</td>
+                        <td className="border-thick">
+                          <a href={pr.pr_url} target="_blank" rel="noopener noreferrer">
+                            {pr.pr_key}
+                          </a>
+                        </td>
+                        <td className="border-thick">{pr.author}</td>
                         <td className="border-thick">{pr.branch}</td>
                         <td className="border-thick">{pr.date}</td>
                         <td className="border-thick">{pr.security_issues}</td>
