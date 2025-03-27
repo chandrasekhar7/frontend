@@ -96,15 +96,17 @@ function App() {
               <Table striped bordered hover className="pr-table">
                 <thead className="table-dark">
                   <tr>
-                    <th className="border-thick">PR Key</th>
+                    <th className="border-thick">PR Number</th>
                     <th className="border-thick">Author</th>
+                    <th className="border-thick">reviewers</th>
                     <th className="border-thick">Branch</th>
                     <th className="border-thick">Date</th>
+                    <th className="border-thick">PR_Open_Status</th>
                     <th className="border-thick">Security Issues</th>
                     <th className="border-thick">Reliability Issues</th>
                     <th className="border-thick">Maintainability Issues</th>
                     <th className="border-thick">Coverage (%)</th>
-                    <th className="border-thick">Duplications (%)</th>
+                    <th className="border-thick">Duplications after Merge (%)</th>
                     <th className="border-thick">Security Hotspots</th>
                   </tr>
                 </thead>
@@ -118,8 +120,10 @@ function App() {
                           </a>
                         </td>
                         <td className="border-thick">{pr.author}</td>
+                        <td className="border-thick">{pr.reviewers}</td>
                         <td className="border-thick">{pr.branch}</td>
                         <td className="border-thick">{pr.date}</td>
+                        <td className="border-thick">{pr.pr_open_status}</td>
                         <td className="border-thick">{pr.security_issues}</td>
                         <td className="border-thick">{pr.reliability_issues}</td>
                         <td className="border-thick">{pr.maintainability_issues}</td>
