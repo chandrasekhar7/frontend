@@ -3,7 +3,7 @@ import { Table, Button, Container, Spinner } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css"; // Custom CSS
 
-const API_URL = "http://127.0.0.1:5000/getPullRequests";
+const API_URL = "https://dashboard-api-kqu0.onrender.com/getPullRequests";
 
 function App() {
   const [prData, setPrData] = useState({});
