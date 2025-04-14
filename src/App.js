@@ -32,7 +32,7 @@ function App() {
         console.log("All PR Results:", data.pr_results);
 
         const filteredOpenPrs = data.pr_results.filter(
-          (pr) => pr.pr_open_status !== "Merged"
+          (pr) => pr.pr_open_status.includes("day") && !pr.pr_open_status.includes("Closed") && !pr.pr_open_status.includes("Merged")
         );
         setOpenPrs(filteredOpenPrs);
 
@@ -50,12 +50,26 @@ function App() {
   };
 
   const exportToCSV = (prs, filename) => {
-    const headers = Object.keys(prs[0] || {}).join(",");
-    const rows = prs.map((pr) =>
-      Object.values(pr).join(",")
-    ).join("\n");
-
-    const blob = new Blob([headers + "\n" + rows], { type: "text/csv" });
+    if (!prs.length) return;
+  
+    const headers = Object.keys(prs[0]).join(",");
+    const rows = prs.map((pr) => {
+      const row = { ...pr };
+      if (Array.isArray(row.reviewers)) {
+        row.reviewers = `"${row.reviewers.join("; ")}"`; // Wrap in quotes
+      } else {
+        row.reviewers = `"${row.reviewers}"`;
+      }
+  
+      // Ensure all fields are stringified and wrapped in quotes
+      return Object.values(row)
+        .map((val) => `"${String(val).replace(/"/g, '""')}"`) // CSV escape
+        .join(",");
+    });
+  
+    const csv = [headers, ...rows].join("\n");
+  
+    const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -63,6 +77,7 @@ function App() {
     link.click();
     URL.revokeObjectURL(url);
   };
+  
 
   useEffect(() => {
     fetchPRData();
